@@ -25,6 +25,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * event handler to process receiving messages
  *
@@ -60,16 +65,9 @@ public class SomethingServerHandler extends ChannelInboundHandlerAdapter {
 
         logger.debug(stringMessage);
 
-        String[] splitMessage = stringMessage.split("::");
+        List<String> splitMessage = new ArrayList<>(Arrays.asList(stringMessage.split(";;")));
 
-        if ( splitMessage.length != 2 ) {
-            ctx.channel().writeAndFlush(stringMessage + "\n\r");
-            return;
-        }
 
-        if ( channelRepository.get(splitMessage[0]) != null ) {
-            channelRepository.get(splitMessage[0]).writeAndFlush(splitMessage[1] + "\n\r");
-        }
     }
 
     @Override

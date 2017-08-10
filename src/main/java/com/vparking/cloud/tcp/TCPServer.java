@@ -31,7 +31,7 @@ import java.net.InetSocketAddress;
  * @author Jibeom Jung
  */
 @Component
-public class TCPServer {
+public class  TCPServer {
 
     @Autowired
     @Qualifier("serverBootstrap")
