@@ -17,7 +17,7 @@ public class BaseMsg implements Serializable {
 
     public BaseMsg(){}
 
-    BaseMsg(List<String> list) {
+    public BaseMsg(List<String> list) {
 
         if(list.size()<4)
             return;

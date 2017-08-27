@@ -15,7 +15,12 @@
  */
 package com.vparking.cloud.tcp.handler;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import com.vparking.cloud.tcp.ChannelRepository;
+import com.vparking.cloud.tcp.model.BaseMsg;
+import com.vparking.cloud.tcp.model.ControlMsg;
+import com.vparking.cloud.tcp.model.LoginMsg;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -40,6 +45,8 @@ import java.util.List;
 @ChannelHandler.Sharable
 public class SomethingServerHandler extends ChannelInboundHandlerAdapter {
 
+    private String loginPassword = "password";
+
     @Autowired
     private ChannelRepository channelRepository;
 
@@ -50,22 +57,60 @@ public class SomethingServerHandler extends ChannelInboundHandlerAdapter {
         Assert.notNull(this.channelRepository, "[Assertion failed] - ChannelRepository is required; it must not be null");
 
         ctx.fireChannelActive();
-        logger.debug(ctx.channel().remoteAddress());
-        String channelKey = ctx.channel().remoteAddress().toString();
-        channelRepository.put(channelKey, ctx.channel());
 
-        ctx.writeAndFlush("Your channel key is " + channelKey + "\n\r");
-
-        logger.debug("Binded Channel Count is " + this.channelRepository.size());
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String stringMessage = (String) msg;
+    public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
+        String msg = (String) obj;
 
-        logger.debug(stringMessage);
+        logger.debug(msg);
+        Gson gson = new Gson();
+        BaseMsg baseMsg;
+        try {
+            baseMsg = gson.fromJson(msg, BaseMsg.class);
+        }catch (Exception e){
+            logger.error(e);
+            return;
+        }
 
-        List<String> splitMessage = new ArrayList<>(Arrays.asList(stringMessage.split(";;")));
+        // login
+        if(channelRepository.get(baseMsg.getHubId()) == null){
+            if(baseMsg.getType().equals(BaseMsg.MsgType.LOGIN)){
+                LoginMsg loginMsg = gson.fromJson(msg, LoginMsg.class);
+                if(loginMsg.getPassword().equals(loginPassword)) {
+                    channelRepository.put(loginMsg.getHubId(), ctx.channel());
+                    return;
+                }
+            }else {
+                return;
+            }
+        }
+
+
+        switch (baseMsg.getType()){
+            case PING:
+                channelRepository.get(baseMsg.getHubId()).writeAndFlush("Ping Success");
+                break;
+            case UP:
+                ControlMsg controlMsg = gson.fromJson(msg, ControlMsg.class);
+
+                break;
+            case DOWN:
+                break;
+            case REPLY:
+                break;
+            case STATUS:
+                break;
+            case ALARM_ON:
+                break;
+            case ALARM_OFF:
+                break;
+            default:
+                    break;
+
+        }
+
 
 
     }
