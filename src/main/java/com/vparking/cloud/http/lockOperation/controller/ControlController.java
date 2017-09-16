@@ -17,7 +17,7 @@ import io.swagger.annotations.Api;
 @RestController
 @Api(value = "/operation", description = "指令")
 @RequestMapping("/api/lock/operation")
-public class LocalOperationController extends BaseController{
+public class ControlController extends BaseController{
 
     @RequestMapping(value = "/down", method = RequestMethod.POST)
     @ApiOperation(value = "降锁", notes = "发送降锁指令, \n" +
