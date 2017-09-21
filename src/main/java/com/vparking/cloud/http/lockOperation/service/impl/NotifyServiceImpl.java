@@ -27,7 +27,7 @@ public class NotifyServiceImpl implements NotifyService {
         request.setParameters(gson.fromJson(gson.toJson(msg), Map.class));
         request.setUrl(url);
         request.setResponseType(Response.success().getClass());
-        RestUtils.callApi(request);
+        Response<BaseMsg> response = (Response<BaseMsg>) RestUtils.callApi(request);
 
     }
 }
