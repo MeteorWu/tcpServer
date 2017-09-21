@@ -5,8 +5,8 @@ import com.vparking.cloud.common.http.rest.RestUtils;
 import com.vparking.cloud.common.http.rest.bean.RestRequestBean;
 import com.vparking.cloud.http.lockOperation.service.NotifyService;
 import com.vparking.cloud.tcp.model.messages.BaseMsg;
-import com.vparking.cloud.tcp.model.messages.Message;
 import org.springframework.http.HttpMethod;
+import com.vparking.cloud.common.http.response.Response;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -26,6 +26,7 @@ public class NotifyServiceImpl implements NotifyService {
         request.setMethod(HttpMethod.POST);
         request.setParameters(gson.fromJson(gson.toJson(msg), Map.class));
         request.setUrl(url);
+        request.setResponseType(Response.success().getClass());
         RestUtils.callApi(request);
 
     }
