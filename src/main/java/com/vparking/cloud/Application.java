@@ -15,8 +15,8 @@
  */
 package com.vparking.cloud;
 
-import com.vparking.cloud.tcp.handler.SomethingChannelInitializer;
-import com.vparking.cloud.tcp.ChannelRepository;
+import com.vparking.cloud.tcp.handler.ServerChannel;
+import com.vparking.cloud.tcp.model.repo.ChannelRepository;
 import com.vparking.cloud.tcp.TCPServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -101,7 +101,7 @@ public class Application extends SpringBootServletInitializer {
         b.group(bossGroup(), workerGroup())
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.DEBUG))
-                .childHandler(somethingChannelInitializer);
+                .childHandler(serverChannel);
         Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
         Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
         for (@SuppressWarnings("rawtypes") ChannelOption option : keySet) {
@@ -111,8 +111,8 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Autowired
-    @Qualifier("somethingChannelInitializer")
-    private SomethingChannelInitializer somethingChannelInitializer;
+    @Qualifier("serverChannel")
+    private ServerChannel serverChannel;
 
     @Bean(name = "tcpChannelOptions")
     public Map<ChannelOption<?>, Object> tcpChannelOptions() {
