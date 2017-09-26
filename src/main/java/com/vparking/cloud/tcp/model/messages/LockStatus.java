@@ -5,7 +5,6 @@ package com.vparking.cloud.tcp.model.messages;
  */
 public class LockStatus {
 
-
     public enum Status{
         UP, DOWN, MIDDLE, FAULT
     }

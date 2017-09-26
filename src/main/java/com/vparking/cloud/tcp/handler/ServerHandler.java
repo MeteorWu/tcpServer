@@ -92,6 +92,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 LoginMsg loginMsg = gson.fromJson(msg, LoginMsg.class);
                 if(loginMsg.getPassword().equals(loginPassword)) {
                     channelRepository.put(loginMsg.getHubId(), ctx.channel());
+                    ctx.writeAndFlush("Login Success!! \n");
                     return;
                 }
             }else {
@@ -126,6 +127,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             case NOTIFY_ALARM_ON:
             case NOTIFY_ALARM_OFF:
                 notifyService.notify(baseMsg);
+                ctx.writeAndFlush("Notify Success!! \n");
                 break;
             default:
                 break;
